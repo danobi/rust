@@ -777,6 +777,7 @@ pub(crate) fn render_impls(
                     show_non_assoc_items: true,
                     toggle_open_by_default,
                 },
+                false,
             );
             buffer.into_inner()
         })
@@ -1246,6 +1247,11 @@ fn render_assoc_items_inner(
     derefs: &mut DefIdSet,
 ) {
     info!("Documenting associated items of {:?}", containing_item.name);
+    let xxx = if let Some(sym) = containing_item.name {
+        sym.to_string() == "Program"
+    } else {
+        false
+    };
     let shared = Rc::clone(&cx.shared);
     let cache = &shared.cache;
     let Some(v) = cache.impls.get(&it) else { return };
@@ -1255,6 +1261,9 @@ fn render_assoc_items_inner(
         let mut tmp_buf = Buffer::html();
         let (render_mode, id, class_html) = match what {
             AssocItemRender::All => {
+                if xxx {
+                    println!("XXX: rendering header for program");
+                }
                 write_impl_section_heading(&mut tmp_buf, "Implementations", "implementations");
                 (RenderMode::Normal, "implementations-list".to_owned(), "")
             }
@@ -1297,6 +1306,7 @@ fn render_assoc_items_inner(
                     show_non_assoc_items: true,
                     toggle_open_by_default: true,
                 },
+                xxx,
             );
         }
         if !impls_buf.is_empty() {
@@ -1561,6 +1571,7 @@ fn render_impl(
     use_absolute: Option<bool>,
     aliases: &[String],
     rendering_params: ImplRenderingParameters,
+    xxx: bool,
 ) {
     let shared = Rc::clone(&cx.shared);
     let cache = &shared.cache;
@@ -1584,9 +1595,13 @@ fn render_impl(
         is_default_item: bool,
         trait_: Option<&clean::Trait>,
         rendering_params: ImplRenderingParameters,
+        xxx: bool,
     ) {
         let item_type = item.type_();
         let name = item.name.as_ref().unwrap();
+        if xxx {
+            println!("XXX: documenting impl item: {name}");
+        }
 
         let render_method_item = rendering_params.show_non_assoc_items
             && match render_mode {
@@ -1827,6 +1842,7 @@ fn render_impl(
                         false,
                         trait_,
                         rendering_params,
+                        xxx,
                     );
                 }
                 _ => {}
@@ -1845,6 +1861,7 @@ fn render_impl(
                 false,
                 trait_,
                 rendering_params,
+                xxx,
             );
         }
         for method in methods {
@@ -1859,6 +1876,7 @@ fn render_impl(
                 false,
                 trait_,
                 rendering_params,
+                xxx,
             );
         }
     }
@@ -1872,6 +1890,7 @@ fn render_impl(
         parent: &clean::Item,
         render_mode: RenderMode,
         rendering_params: ImplRenderingParameters,
+        xxx: bool,
     ) {
         for trait_item in &t.items {
             // Skip over any default trait items that are impossible to reference
@@ -1902,6 +1921,7 @@ fn render_impl(
                 true,
                 Some(t),
                 rendering_params,
+                xxx,
             );
         }
     }
@@ -1923,6 +1943,7 @@ fn render_impl(
                 &i.impl_item,
                 render_mode,
                 rendering_params,
+                xxx,
             );
         }
     }

@@ -655,6 +655,7 @@ impl TypeAliasPart {
                                 show_non_assoc_items: true,
                                 toggle_open_by_default: true,
                             },
+                            false,
                         );
                         let text = buf.into_inner();
                         let type_alias_fqp = (*type_alias_fqp).iter().join("::");

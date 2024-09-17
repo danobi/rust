@@ -1011,6 +1011,7 @@ fn item_trait(w: &mut Buffer, cx: &mut Context<'_>, it: &clean::Item, t: &clean:
                         show_non_assoc_items: true,
                         toggle_open_by_default: false,
                     },
+                    false,
                 );
             }
         }
@@ -2167,6 +2168,7 @@ fn render_implementor(
             show_non_assoc_items: false,
             toggle_open_by_default: false,
         },
+        false,
     );
 }
 
